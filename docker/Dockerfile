@@ -2,7 +2,8 @@
 ARG BASE_IMAGE="ubuntu:22.04"
 
 # -- go builder --
-FROM golang:1.18.2 AS gobuilder
+ARG BUILDPLATFORM
+FROM --platform=$BUILDPLATFORM golang:1.18.2 AS gobuilder
 
 ENV DEBIAN_FRONTEND="noninteractive"
 RUN apt-get update && apt-get install -y libpcap-dev
@@ -13,9 +14,9 @@ COPY . .
 
 RUN ./scripts/all.bash
 
-
 # -- minimega image --
-FROM ${BASE_IMAGE}
+ARG BUILDPLATFORM
+FROM --platform=$BUILDPLATFORM ${BASE_IMAGE}
 
 # General image metadata
 # Reference: https://github.com/opencontainers/image-spec/blob/main/annotations.md
